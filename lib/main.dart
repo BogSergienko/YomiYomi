@@ -1,44 +1,73 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'furigana_screen.dart';
 
 void main() {
-  runApp(YomiReaderApp());
+  runApp(const MyApp());
 }
 
-class YomiReaderApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Yomi Reader',
-      home: FuriganaReader(),
+      title: 'YomiYomi',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const HomeScreen(),
     );
   }
 }
 
-class FuriganaReader extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
-  _FuriganaReaderState createState() => _FuriganaReaderState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _FuriganaReaderState extends State<FuriganaReader> {
-  late final WebViewController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Загружаем наш HTML из папки assets/kuroshiro/
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadFlutterAsset('assets/index.html');
-  }
+class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Фуригана Читалка')),
-      body: WebViewWidget(controller: _controller),
+      appBar: AppBar(title: const Text('YomiYomi')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                labelText: 'Введите японский текст',
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                if (_controller.text.isNotEmpty) {
+                  debugPrint('Отправляем текст: ${_controller.text}');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FuriganaScreen(text: _controller.text),
+                    ),
+                  );
+                } else {
+                  debugPrint('Текст пустой!');
+                }
+              },
+              child: const Text('Конвертировать'),
+            ),
+          ],
+        ),
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

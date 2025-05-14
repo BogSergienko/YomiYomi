@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>YomiYomi</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #result { font-size: 18px; line-height: 2; }
+    ruby { margin-right: 5px; }
+    rt { font-size: 12px; color: #555; }
+  </style>
+</head>
+<body>
+<p id="status">⏳ Загрузка...</p>
+<div id="result"></div>
+<script src="file:///android_asset/flutter_assets/assets/kuroshiro/kuroshiro.min.js"></script>
+<script src="file:///android_asset/flutter_assets/assets/kuroshiro/kuroshiro-analyzer-kuromoji.min.js"></script>
+<script>
+  let kuroshiro;
+  async function initKuroshiro() {
+    try {
+      if (typeof Kuroshiro === 'undefined' || typeof KuromojiAnalyzer === 'undefined') {
+        throw new Error('Библиотеки Kuroshiro или KuromojiAnalyzer не загрузились');
+      }
+      const KuroshiroConstructor = Kuroshiro.default || Kuroshiro;
+      if (typeof KuroshiroConstructor !== 'function') {
+        throw new Error('Kuroshiro не является конструктором');
+      }
+      kuroshiro = new KuroshiroConstructor();
+      await kuroshiro.init(new KuromojiAnalyzer({ dictPath: 'file:///android_asset/flutter_assets/assets/dict' }));
+      document.getElementById('status').innerText = '✅ Kuroshiro готов';
+      console.log('Kuroshiro инициализирован');
+    } catch (err) {
+      document.getElementById('status').innerText = '❌ Ошибка инициализации';
+      console.error('Ошибка инициализации:', err);
+    }
+  }
+  async function convertText(text) {
+    try {
+      console.log('Получен текст:', text);
+      if (!kuroshiro) {
+        throw new Error('Kuroshiro не инициализирован');
+      }
+      if (!text) {
+        throw new Error('Текст пустой');
+      }
+      const result = await kuroshiro.convert(text, { to: 'hiragana', mode: 'furigana' });
+      document.getElementById('result').innerHTML = result;
+      document.getElementById('status').innerText = '✅ Готово';
+      console.log('Фуригана готова:', result);
+    } catch (err) {
+      document.getElementById('status').innerText = '❌ Ошибка конвертации';
+      console.error('Ошибка конвертации:', err);
+    }
+  }
+  window.addEventListener('flutterInAppWebViewPlatformReady', function(event) {
+    console.log('WebView готов');
+    initKuroshiro().then(() => {
+      window.flutter_inappwebview.callHandler('getText').then(function(text) {
+        convertText(text);
+      });
+    });
+  });
+</script>
+</body>
+</html>
