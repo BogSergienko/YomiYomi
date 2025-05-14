@@ -4,14 +4,43 @@
   <meta charset="UTF-8">
   <title>YomiYomi</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    #result { font-size: 18px; line-height: 2; }
-    ruby { margin-right: 5px; }
-    rt { font-size: 12px; color: #555; }
+    body {
+      font-family: 'Noto Sans JP', Arial, sans-serif;
+      margin: 16px;
+      background-color: #f5f5f5;
+    }
+    #status {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: #333;
+    }
+    #result {
+      font-size: 26px; /* Начальный размер ~4 мм */
+      line-height: 2.2;
+      color: #222;
+      background-color: #fff;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    ruby {
+      margin-right: 8px;
+    }
+    rt {
+      font-size: 14px; /* Начальный размер фуриганы */
+      color: #555;
+    }
+    #fontSlider {
+      width: 100%;
+      margin: 16px 0;
+    }
   </style>
 </head>
 <body>
 <p id="status">⏳ Загрузка...</p>
+<label for="fontSlider"></label><input type="range" id="fontSlider" min="16" max="144" value="26">
 <div id="result"></div>
 <script src="file:///android_asset/flutter_assets/assets/kuroshiro/kuroshiro.min.js"></script>
 <script src="file:///android_asset/flutter_assets/assets/kuroshiro/kuroshiro-analyzer-kuromoji.min.js"></script>
@@ -53,6 +82,15 @@
       console.error('Ошибка конвертации:', err);
     }
   }
+  const slider = document.getElementById('fontSlider');
+  const resultDiv = document.getElementById('result');
+  slider.addEventListener('input', () => {
+    const fontSize = slider.value;
+    resultDiv.style.fontSize = `${fontSize}px`;
+    document.querySelectorAll('rt').forEach(rt => {
+      rt.style.fontSize = `${fontSize / 2}px`; /* Фуригана в 2 раза меньше */
+    });
+  });
   window.addEventListener('flutterInAppWebViewPlatformReady', function(event) {
     console.log('WebView готов');
     initKuroshiro().then(() => {

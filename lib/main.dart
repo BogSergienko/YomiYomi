@@ -12,7 +12,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'YomiYomi',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(fontSize: 16),
+        ),
+      ),
       home: const HomeScreen(),
     );
   }
@@ -31,33 +36,67 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('YomiYomi')),
+      appBar: AppBar(
+        title: const Text('YomiYomi'),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                labelText: 'Введите японский текст',
+            Expanded(
+              child: SingleChildScrollView(
+                child: TextField(
+                  controller: _controller,
+                  maxLines: null,
+                  minLines: 10,
+                  textAlignVertical: TextAlignVertical.top,
+                  decoration: const InputDecoration(
+                    labelText: 'Введите японский текст',
+                    border: OutlineInputBorder(),
+                    alignLabelWithHint: true,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                if (_controller.text.isNotEmpty) {
-                  debugPrint('Отправляем текст: ${_controller.text}');
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FuriganaScreen(text: _controller.text),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _controller.clear();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                  );
-                } else {
-                  debugPrint('Текст пустой!');
-                }
-              },
-              child: const Text('Конвертировать'),
+                    child: const Text('Очистить', style: TextStyle(fontSize: 18)),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_controller.text.isNotEmpty) {
+                        debugPrint('Отправляем текст: ${_controller.text}');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FuriganaScreen(text: _controller.text),
+                          ),
+                        );
+                      } else {
+                        debugPrint('Текст пустой!');
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text('Конвертировать', style: TextStyle(fontSize: 18)),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
