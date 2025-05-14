@@ -1,0 +1,6 @@
+# Игнорируем ненужные файлы
+.idea/
+.vscode/
+build/
+*.g.dart
+*.lock

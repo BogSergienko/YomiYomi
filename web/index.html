@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Куроширо Тест</title>
+</head>
+<body>
+<h2>Куроширо Тест</h2>
+<p id="status">⏳ Загрузка...</p>
+<label for="input"></label><input type="text" id="input" placeholder="日本語を入力">
+<button onclick="convert()">Конвертировать</button>
+<div id="result"></div>
+
+<!-- Проверка загрузки библиотек -->
+<script>
+  document.body.innerHTML += "<p>typeof Kuroshiro до загрузки: " + typeof Kuroshiro + "</p>";
+</script>
+
+<!-- Подключаем библиотеки -->
+<script src="/assets/kuroshiro/kuroshiro.min.js"></script>
+<script src="/assets/kuroshiro/kuroshiro-analyzer-kuromoji.min.js"></script>
+
+<!-- Проверка после загрузки -->
+<script>
+  document.body.innerHTML += "<p>typeof Kuroshiro после загрузки: " + typeof Kuroshiro + "</p>";
+  document.body.innerHTML += "<p>typeof KuromojiAnalyzer после загрузки: " + typeof KuromojiAnalyzer + "</p>";
+</script>
+
+<!-- Основной JS -->
+<script>
+  let kuroshiro;
+
+  // Проверяем, загрузились ли библиотеки
+  document.getElementById('status').innerText = '✅ JS-файлы загружены';
+
+  async function initKuroshiro() {
+    try {
+      if (typeof Kuroshiro === 'undefined' || typeof KuromojiAnalyzer === 'undefined') {
+        throw new Error('Библиотеки Kuroshiro или KuromojiAnalyzer не загрузились');
+      }
+
+      // Проверяем, является ли Kuroshiro конструктором
+      const KuroshiroConstructor = Kuroshiro.default || Kuroshiro;
+      if (typeof KuroshiroConstructor !== 'function') {
+        throw new Error('Kuroshiro не является конструктором');
+      }
+
+      kuroshiro = new KuroshiroConstructor();
+      await kuroshiro.init(new KuromojiAnalyzer({ dictPath: '/assets/dict' }));
+      document.getElementById('status').innerText = '✅ Kuroshiro готов';
+    } catch (err) {
+      document.getElementById('status').innerText = '❌ Ошибка инициализации';
+      console.error("Ошибка инициализации:", err);
+    }
+  }
+
+  async function convert() {
+    try {
+      if (!kuroshiro) {
+        throw new Error('Kuroshiro не инициализирован');
+      }
+      const text = document.getElementById('input').value;
+      if (!text) {
+        throw new Error('Введите текст');
+      }
+      const result = await kuroshiro.convert(text, { to: 'hiragana', mode: 'furigana' });
+      document.getElementById('result').innerHTML = result;
+    } catch (err) {
+      document.getElementById('result').innerText = '❌ Ошибка конвертации: ' + err.message;
+      console.error("Ошибка конвертации:", err);
+    }
+  }
+
+  // Инициализируем Kuroshiro при загрузке страницы
+  window.onload = initKuroshiro;
+</script>
+
+<!-- Логи для отладки -->
+<script>
+  window.addEventListener('load', () => {
+    console.log("window.Kuroshiro:", window.Kuroshiro);
+    console.log("window.KuromojiAnalyzer:", window.KuromojiAnalyzer);
+  });
+</script>
+</body>
+</html>

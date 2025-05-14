@@ -1,0 +1,1 @@
+ C:\\Users\\BogSe\\yomi_reader\\.dart_tool\\flutter_build\\fd406158009be2a0483808a9cddd4012\\native_assets.json: 
