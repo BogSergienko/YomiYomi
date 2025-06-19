@@ -1,4 +1,5 @@
 -keep class com.example.yomi_reader.** { *; }
+-keep class com.worksap.nlp.sudachi.** { *; }
 -keep class org.slf4j.** { *; }
 -keep class com.github.takawitter.** { *; }
 -dontwarn com.github.takawitter.**
