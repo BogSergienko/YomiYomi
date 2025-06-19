@@ -30,6 +30,7 @@ YomiYomi is a mobile app designed to help learners of Japanese read native texts
 - Markdown/formatting support.
 - Offline/online hybrid OCR support.
 - Saved translations caching.
+- Support for Japanese school grade levels (e.g., elementary and middle school) to assist native children in learning to read.
 
 ## Known Issues
 - Furigana alignment may shift on very complex sentence layouts.
