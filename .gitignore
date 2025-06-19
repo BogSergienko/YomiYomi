@@ -1,6 +1,40 @@
-# Игнорируем ненужные файлы
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
 .idea/
-.vscode/
+# Flutter/Dart related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
 build/
-*.g.dart
-*.lock
+# Android related
+android/.gradle/
+android/app/build/
+android/local.properties
+# iOS related
+ios/.generated/
+ios/Flutter/Generated.xcconfig
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/.symlinks/
+# Sensitive or OS-generated files
+*.key
+*.pem
+*.cer
+*.p12
+*.keystore
+*.jks
