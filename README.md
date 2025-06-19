@@ -143,3 +143,11 @@ YomiYomi — мобильное приложение для чтения япо�
 
 ### Лицензия
 MIT License. См. [LICENSE](LICENSE) для подробностей.
+
+## Download
+Download the latest Android APK from [Releases](https://github.com/BogSergienko/YomiYomi/releases).
+
+## ダウンロード
+最新のAndroid APKは[リリース](https://github.com/BogSergienko/YomiYomi/releases)からダウンロードできます。
+
+
