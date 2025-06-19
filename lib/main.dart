@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'furigana_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Запрашиваем разрешение
+  await _requestStoragePermission();
   runApp(const MyApp());
+}
+
+Future<void> _requestStoragePermission() async {
+  var status = await Permission.photos.status;
+  if (!status.isGranted) {
+    var result = await Permission.photos.request();
+    if (!result.isGranted) {
+      debugPrint('Разрешение READ_MEDIA_IMAGES не предоставлено');
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {

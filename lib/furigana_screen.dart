@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'database.dart';
+import 'sudachi.dart';
 
 class FuriganaScreen extends StatefulWidget {
   final String text;
@@ -13,6 +15,7 @@ class FuriganaScreen extends StatefulWidget {
 class _FuriganaScreenState extends State<FuriganaScreen> {
   late InAppWebViewController _webViewController;
   bool _isLoading = true;
+  final DatabaseHelper _dbHelper = DatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +40,55 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
               _webViewController = controller;
               _webViewController.addJavaScriptHandler(
                 handlerName: 'getText',
-                callback: (args) {
+                callback: (args) async {
                   debugPrint('Передаём текст: ${widget.text}');
-                  return widget.text;
+                  final tokens = await Sudachi.tokenize(widget.text);
+                  debugPrint('Токены: $tokens');
+                  return tokens;
+                },
+              );
+              _webViewController.addJavaScriptHandler(
+                handlerName: 'findTerm',
+                callback: (args) async {
+                  try {
+                    final query = args[0] as String;
+                    final results = await _dbHelper.findTerm(query);
+                    debugPrint('Найдено для "$query": ${results.length} записей');
+                    return results;
+                  } catch (e) {
+                    debugPrint('Ошибка поиска терма: $e');
+                    return [];
+                  }
+                },
+              );
+              _webViewController.addJavaScriptHandler(
+                handlerName: 'findTermWithContext',
+                callback: (args) async {
+                  try {
+                    final query = args[0] as String;
+                    final context = args[1] as String;
+                    final results = await _dbHelper.findTermWithContext(query, context);
+                    debugPrint('Найдено для "$query" с контекстом "$context": ${results.length} записей');
+                    return results;
+                  } catch (e) {
+                    debugPrint('Ошибка поиска терма с контекстом: $e');
+                    return [];
+                  }
+                },
+              );
+              _webViewController.addJavaScriptHandler(
+                handlerName: 'findFullTerm',
+                callback: (args) async {
+                  try {
+                    final text = args[0] as String;
+                    final startIndex = args[1] as int;
+                    final results = await _dbHelper.findFullTerm(text, startIndex);
+                    debugPrint('Найдено для текста "$text" с индекса $startIndex: ${results.length} записей');
+                    return results;
+                  } catch (e) {
+                    debugPrint('Ошибка поиска полного терма: $e');
+                    return [];
+                  }
                 },
               );
             },

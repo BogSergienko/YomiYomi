@@ -2,103 +2,135 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>YomiYomi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Фуригана</title>
   <style>
     body {
-      font-family: 'Noto Sans JP', Arial, sans-serif;
-      margin: 16px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 10px;
       background-color: #f5f5f5;
-    }
-    #status {
-      font-size: 18px;
-      margin-bottom: 16px;
       color: #333;
     }
-    #result {
-      font-size: 26px; /* Начальный размер ~4 мм */
-      line-height: 2.2;
-      color: #222;
-      background-color: #fff;
-      padding: 16px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      max-height: 70vh;
-      overflow-y: auto;
-    }
     ruby {
-      margin-right: 8px;
+      ruby-align: center;
     }
     rt {
-      font-size: 14px; /* Начальный размер фуриганы */
-      color: #555;
+      font-size: 0.6em;
+      color: #666;
     }
-    #fontSlider {
-      width: 100%;
-      margin: 16px 0;
+    .word {
+      cursor: pointer;
+      border-bottom: 1px dotted #007bff;
+      position: relative;
+    }
+    .word:hover {
+      background-color: #e7f1ff;
+    }
+    .tooltip {
+      position: absolute;
+      top: -50px;
+      left: 0;
+      padding: 8px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 10;
+      font-size: 14px;
+      display: none;
+      white-space: nowrap;
+    }
+    .word:hover .tooltip {
+      display: block;
+    }
+    #translation {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      display: none;
     }
   </style>
 </head>
 <body>
-<p id="status">⏳ Загрузка...</p>
-<label for="fontSlider"></label><input type="range" id="fontSlider" min="16" max="144" value="26">
-<div id="result"></div>
-<script src="file:///android_asset/flutter_assets/assets/kuroshiro/kuroshiro.min.js"></script>
-<script src="file:///android_asset/flutter_assets/assets/kuroshiro/kuroshiro-analyzer-kuromoji.min.js"></script>
+<div id="content"></div>
+<div id="translation"></div>
+<script src="translator.js"></script>
 <script>
-  let kuroshiro;
-  async function initKuroshiro() {
+  async function init() {
     try {
-      if (typeof Kuroshiro === 'undefined' || typeof KuromojiAnalyzer === 'undefined') {
-        throw new Error('Библиотеки Kuroshiro или KuromojiAnalyzer не загрузились');
-      }
-      const KuroshiroConstructor = Kuroshiro.default || Kuroshiro;
-      if (typeof KuroshiroConstructor !== 'function') {
-        throw new Error('Kuroshiro не является конструктором');
-      }
-      kuroshiro = new KuroshiroConstructor();
-      await kuroshiro.init(new KuromojiAnalyzer({ dictPath: 'file:///android_asset/flutter_assets/assets/dict' }));
-      document.getElementById('status').innerText = '✅ Kuroshiro готов';
-      console.log('Kuroshiro инициализирован');
-    } catch (err) {
-      document.getElementById('status').innerText = '❌ Ошибка инициализации';
-      console.error('Ошибка инициализации:', err);
+      const tokens = await window.flutter_inappwebview.callHandler('getText');
+      console.log('Получены токены:', tokens);
+      renderFurigana(tokens);
+    } catch (e) {
+      console.error('Ошибка получения токенов:', e);
+      document.getElementById('content').innerText = 'Ошибка конвертации';
     }
   }
-  async function convertText(text) {
+
+  function katakanaToHiragana(katakana) {
+    return katakana.replace(/[\u30A1-\u30F6]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+  }
+
+  function hasKanji(text) {
+    return /[\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]/.test(text);
+  }
+
+  function renderFurigana(tokens) {
+    const contentDiv = document.getElementById('content');
+    contentDiv.innerHTML = '';
+    tokens.forEach(token => {
+      const surface = token.surface || '';
+      const reading = token.reading || '';
+      const element = hasKanji(surface) && reading !== surface ? document.createElement('ruby') : document.createElement('span');
+      if (hasKanji(surface) && reading !== surface) {
+        element.innerHTML = `${surface}<rt>${katakanaToHiragana(reading)}</rt>`;
+      } else {
+        element.innerText = surface;
+      }
+      element.className = 'word';
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip';
+      tooltip.id = `tooltip-${surface}-${Math.random().toString(36).substr(2, 9)}`;
+      element.appendChild(tooltip);
+      element.onclick = () => showTranslation(token, tooltip);
+      contentDiv.appendChild(element);
+    });
+  }
+
+  async function showTranslation(token, tooltip) {
+    tooltip.innerHTML = 'Поиск перевода...';
     try {
-      console.log('Получен текст:', text);
-      if (!kuroshiro) {
-        throw new Error('Kuroshiro не инициализирован');
+      const query = token.surface;
+      const results = await window.flutter_inappwebview.callHandler('findTerm', query);
+      console.log('Перевод для', query, ':', results);
+      let rus = 'Нет перевода на русском';
+      let eng = 'Нет перевода на английском';
+      if (results.length > 0) {
+        for (const entry of results) {
+          if (entry.lang === 'rus' && entry.gloss) rus = entry.gloss;
+          if (entry.lang === 'eng' && entry.gloss) eng = entry.gloss;
+        }
       }
-      if (!text) {
-        throw new Error('Текст пустой');
+      if (rus === 'Нет перевода на русском' && eng === 'Нет перевода на английском' && token.reading) {
+        const readingResults = await window.flutter_inappwebview.callHandler('findTerm', katakanaToHiragana(token.reading));
+        console.log('Перевод для чтения', katakanaToHiragana(token.reading), ':', readingResults);
+        for (const entry of readingResults) {
+          if (entry.lang === 'rus' && entry.gloss) rus = entry.gloss;
+          if (entry.lang === 'eng' && entry.gloss) eng = entry.gloss;
+        }
       }
-      const result = await kuroshiro.convert(text, { to: 'hiragana', mode: 'furigana' });
-      document.getElementById('result').innerHTML = result;
-      document.getElementById('status').innerText = '✅ Готово';
-      console.log('Фуригана готова:', result);
-    } catch (err) {
-      document.getElementById('status').innerText = '❌ Ошибка конвертации';
-      console.error('Ошибка конвертации:', err);
+      tooltip.innerHTML = `<strong>${query}</strong><br>Русский: ${rus}<br>Английский: ${eng}`;
+    } catch (e) {
+      console.error('Ошибка поиска перевода:', e);
+      tooltip.innerHTML = 'Ошибка поиска перевода';
     }
   }
-  const slider = document.getElementById('fontSlider');
-  const resultDiv = document.getElementById('result');
-  slider.addEventListener('input', () => {
-    const fontSize = slider.value;
-    resultDiv.style.fontSize = `${fontSize}px`;
-    document.querySelectorAll('rt').forEach(rt => {
-      rt.style.fontSize = `${fontSize / 2}px`; /* Фуригана в 2 раза меньше */
-    });
-  });
-  window.addEventListener('flutterInAppWebViewPlatformReady', function(event) {
-    console.log('WebView готов');
-    initKuroshiro().then(() => {
-      window.flutter_inappwebview.callHandler('getText').then(function(text) {
-        convertText(text);
-      });
-    });
-  });
+
+  window.addEventListener('load', init);
 </script>
 </body>
 </html>
