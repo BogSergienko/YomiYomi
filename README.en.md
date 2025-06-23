@@ -16,6 +16,9 @@ YomiYomi is a mobile app designed to help learners of Japanese read native texts
 - **User Library** *(in development)*: Save, tag, and return to your imported texts.
 - **Smart Lookup** *(planned)*: Longest-match contextual translation on tap or selection.
 
+##Performance Notes
+-First Launch: Furigana generation may take about 2 seconds due to dictionary scanning. The first translation may take about 5 seconds due to translator setup. Subsequent operations are instant.
+
 ## In Development
 - JLPT-based furigana filtering.
 - Text library: bug fixes, design improvements, and save/load functionality.
