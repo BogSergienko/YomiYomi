@@ -49,70 +49,72 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('YomiYomi'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: TextField(
-                  controller: _controller,
-                  maxLines: null,
-                  minLines: 10,
-                  textAlignVertical: TextAlignVertical.top,
-                  decoration: const InputDecoration(
-                    labelText: 'Введите японский текст',
-                    border: OutlineInputBorder(),
-                    alignLabelWithHint: true,
-                  ),
+    return SafeArea(
+      bottom: true, // Защита от навигационной панели
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('YomiYomi'),
+          centerTitle: true,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Поле ввода текста
+              TextField(
+                controller: _controller,
+                maxLines: 10,
+                minLines: 10,
+                textAlignVertical: TextAlignVertical.top,
+                decoration: const InputDecoration(
+                  labelText: 'Введите японский текст',
+                  border: OutlineInputBorder(),
+                  alignLabelWithHint: true,
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _controller.clear();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+              const SizedBox(height: 8.0),
+              // Кнопки под полем
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _controller.clear();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: const Text('Очистить', style: TextStyle(fontSize: 18)),
                     ),
-                    child: const Text('Очистить', style: TextStyle(fontSize: 18)),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_controller.text.isNotEmpty) {
-                        debugPrint('Отправляем текст: ${_controller.text}');
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FuriganaScreen(text: _controller.text),
-                          ),
-                        );
-                      } else {
-                        debugPrint('Текст пустой!');
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_controller.text.isNotEmpty) {
+                          debugPrint('Отправляем текст: ${_controller.text}');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FuriganaScreen(text: _controller.text),
+                            ),
+                          );
+                        } else {
+                          debugPrint('Текст пустой!');
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: const Text('Конвертировать', style: TextStyle(fontSize: 18)),
                     ),
-                    child: const Text('Конвертировать', style: TextStyle(fontSize: 18)),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+              const Spacer(), // Заполняет пространство
+            ],
+          ),
         ),
       ),
     );
