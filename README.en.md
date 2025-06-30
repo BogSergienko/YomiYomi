@@ -9,18 +9,18 @@ YomiYomi is a mobile app designed to help learners of Japanese read native texts
 
 ## Features
 - **Furigana Rendering**: Generates furigana (ruby text) for kanji, displayed via a WebView-based engine.
+- **JLPT-Level Filtering**: Toggle furigana visibility by JLPT level (N1–N5 or all) with a dropdown menu and reset cycle.
+- **JLPT Color-Coded Highlighting**: Words and kanji are highlighted by JLPT level (N1: purple, N2: red, N3: orange, N4: yellow, N5: green) using the [Yomitan JLPT Vocab](https://github.com/stephenmk/yomitan-jlpt-vocab) distribution.
 - **Dictionary Integration**: Uses JMdict (English & Russian, v3.6.1) for bilingual word translations.
 - **Text Tokenization**: Powered by Sudachi (v0.7.5) for precise Japanese morphological parsing.
-- **JLPT-Level Highlighting** *(in development)*: Color-coded kanji/vocab by JLPT level (N5–N1).
 - **Offline Mode**: All components work without internet: dictionaries, tokenizer, future OCR modules.
 - **User Library** *(in development)*: Save, tag, and return to your imported texts.
 - **Smart Lookup** *(planned)*: Longest-match contextual translation on tap or selection.
 
-##Performance Notes
--First Launch: Furigana generation may take about 2 seconds due to dictionary scanning. The first translation may take about 5 seconds due to translator setup. Subsequent operations are instant.
+## Performance Notes
+- First Launch: Dictionary conversion to SQLite may take 2–5 seconds. Subsequent launches and operations are instant. The initial white screen will be replaced with a loading indicator in a future update.
 
 ## In Development
-- JLPT-based furigana filtering.
 - Text library: bug fixes, design improvements, and save/load functionality.
 
 ## Planned Features
@@ -36,9 +36,7 @@ YomiYomi is a mobile app designed to help learners of Japanese read native texts
 - Support for Japanese school grade levels (e.g., elementary and middle school) to assist native children in learning to read.
 
 ## Known Issues
-- Furigana alignment may shift on very complex sentence layouts.
 - UI scaling issues on tablets.
-- Translation popup may occasionally go off-screen (fix coming soon).
 - iOS build not yet tested or verified.
 
 ## Getting Started
