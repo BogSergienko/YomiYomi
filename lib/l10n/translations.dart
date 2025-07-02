@@ -9,8 +9,9 @@ class Translations {
       'dark_theme': 'Dark Theme',
       'tokenization_mode': 'Tokenization Mode (coming soon)',
       'language': 'Language',
-      'english_translations': 'English Translations',
       'russian_translations': 'Russian Translations',
+      'japanese_translations': 'Japanese Translations',
+      'jlpt_label': 'JLPT',
     },
     'ru': {
       'app_title': 'YomiYomi',
@@ -21,8 +22,9 @@ class Translations {
       'dark_theme': 'Тёмная тема',
       'tokenization_mode': 'Режим токенизации (скоро)',
       'language': 'Язык',
-      'english_translations': 'Английские переводы',
       'russian_translations': 'Русские переводы',
+      'japanese_translations': 'Японские переводы',
+      'jlpt_label': 'JLPT',
     },
     'ja': {
       'app_title': 'YomiYomi',
@@ -33,8 +35,9 @@ class Translations {
       'dark_theme': 'ダークテーマ',
       'tokenization_mode': 'トークナイゼーションモード（近日公開）',
       'language': '言語',
-      'english_translations': '英語翻訳',
       'russian_translations': 'ロシア語翻訳',
+      'japanese_translations': '日本語翻訳',
+      'jlpt_label': 'JLPT',
     },
   };
 

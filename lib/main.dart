@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'furigana_screen.dart';
 import 'settings_sheet.dart';
 import 'l10n/translations.dart';
+import 'providers/settings_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,24 +28,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'YomiYomi',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        textTheme: const TextTheme(
-          bodyMedium: TextStyle(fontSize: 16),
-        ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          titleTextStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+    return ChangeNotifierProvider(
+      create: (_) => SettingsProvider(),
+      child: Consumer<SettingsProvider>(
+        builder: (context, settings, child) => MaterialApp(
+          title: Translations.get('app_title', settings.uiLanguage),
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            textTheme: const TextTheme(
+              bodyMedium: TextStyle(fontSize: 16),
+            ),
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              titleTextStyle: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
+          home: const HomeScreen(),
         ),
       ),
-      home: const HomeScreen(),
     );
   }
 }
@@ -57,35 +64,26 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _controller = TextEditingController();
-  String _uiLanguage = 'en';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSettings();
-  }
-
-  Future<void> _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _uiLanguage = prefs.getString('ui_language') ?? 'en';
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
+    final settings = Provider.of<SettingsProvider>(context);
+    debugPrint('HomeScreen: uiLanguage=${settings.uiLanguage}');
     return SafeArea(
       bottom: true,
       top: false,
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          title: Text(Translations.get('app_title', _uiLanguage)),
+          title: Text(Translations.get('app_title', settings.uiLanguage)),
           centerTitle: true,
           actions: [
             IconButton(
               icon: const Icon(Icons.menu, color: Colors.black),
-              onPressed: () => showSettingsSheet(context),
+              onPressed: () {
+                debugPrint('Opening SettingsSheet from HomeScreen');
+                showSettingsSheet(context);
+              },
             ),
           ],
         ),
@@ -94,14 +92,14 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 80.0), // Отступ сверху для TextField
+              const SizedBox(height: 80.0),
               TextField(
                 controller: _controller,
                 maxLines: 10,
                 minLines: 10,
                 textAlignVertical: TextAlignVertical.top,
                 decoration: InputDecoration(
-                  labelText: Translations.get('text_field_label', _uiLanguage),
+                  labelText: Translations.get('text_field_label', settings.uiLanguage),
                   border: const OutlineInputBorder(),
                   alignLabelWithHint: true,
                 ),
@@ -118,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       child: Text(
-                        Translations.get('clear_button', _uiLanguage),
+                        Translations.get('clear_button', settings.uiLanguage),
                         style: const TextStyle(fontSize: 18),
                       ),
                     ),
@@ -143,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       child: Text(
-                        Translations.get('convert_button', _uiLanguage),
+                        Translations.get('convert_button', settings.uiLanguage),
                         style: const TextStyle(fontSize: 18),
                       ),
                     ),
