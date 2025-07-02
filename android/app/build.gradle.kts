@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.yomi_reader"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = "29.0.13113456"
 
     compileOptions {

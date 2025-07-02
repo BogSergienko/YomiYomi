@@ -219,7 +219,7 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
   @override
   Widget build(BuildContext context) {
     final settings = Provider.of<SettingsProvider>(context);
-    debugPrint('FuriganaScreen: uiLanguage=${settings.uiLanguage}');
+    debugPrint('FuriganaScreen: uiLanguage=${settings.uiLanguage}, mode=${settings.tokenizationMode}');
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -362,7 +362,7 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
                 handlerName: 'getText',
                 callback: (args) async {
                   debugPrint('Передаём текст: ${widget.text}');
-                  final tokens = await Sudachi.tokenize(widget.text);
+                  final tokens = await Sudachi.tokenize(context, widget.text);
                   final enhancedTokens = [];
                   for (var token in tokens) {
                     final jlptLevel = await _dbHelper.getJLPTLevel(token['surface']);

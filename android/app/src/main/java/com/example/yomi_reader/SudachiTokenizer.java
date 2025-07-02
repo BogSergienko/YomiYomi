@@ -119,7 +119,7 @@ public class SudachiTokenizer {
             Log.d(TAG, "Config loaded from sudachi.json");
             dictionary = new DictionaryFactory().create(config);
             Log.d(TAG, "Dictionary created");
-            tokenizer = dictionary.create(); // Без аргументов
+            tokenizer = dictionary.create();
             Log.d(TAG, "Tokenizer created");
         } catch (Exception e) {
             Log.e(TAG, "Failed to initialize Sudachi: " + e.getMessage(), e);
@@ -138,14 +138,28 @@ public class SudachiTokenizer {
         }
     }
 
-    public static List<Map<String, String>> tokenize(String text) {
+    public static List<Map<String, String>> tokenize(String text, String mode) {
         if (tokenizer == null) {
             Log.e(TAG, "Tokenizer is null, not initialized");
             return new ArrayList<>();
         }
-        Log.d(TAG, "Tokenizing text: " + text);
+        Log.d(TAG, "Tokenizing text: " + text + ", mode: " + mode);
         List<Map<String, String>> tokens = new ArrayList<>();
-        List<Morpheme> morphemes = tokenizer.tokenize(Tokenizer.SplitMode.C, text); // Режим C здесь
+        Tokenizer.SplitMode splitMode;
+        switch (mode) {
+            case "A":
+                splitMode = Tokenizer.SplitMode.A;
+                break;
+            case "B":
+                splitMode = Tokenizer.SplitMode.B;
+                break;
+            case "C":
+            default:
+                splitMode = Tokenizer.SplitMode.C;
+                break;
+        }
+        Log.d(TAG, "Using splitMode: " + splitMode);
+        List<Morpheme> morphemes = tokenizer.tokenize(splitMode, text);
         for (Morpheme m : morphemes) {
             Map<String, String> token = new HashMap<>();
             token.put("surface", m.surface());

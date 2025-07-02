@@ -21,9 +21,14 @@ class MainActivity : FlutterActivity() {
                 }
                 "tokenize" -> {
                     val text = call.argument<String>("text")
+                    val mode = call.argument<String>("mode")
                     if (text != null) {
-                        val tokens = SudachiTokenizer.tokenize(text)
-                        result.success(tokens)
+                        try {
+                            val tokens = SudachiTokenizer.tokenize(text, mode)
+                            result.success(tokens)
+                        } catch (e: Exception) {
+                            result.error("TOKENIZE_ERROR", "Failed to tokenize: ${e.message}", null)
+                        }
                     } else {
                         result.error("TOKENIZE_ERROR", "No text provided", null)
                     }

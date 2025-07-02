@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/material.dart'; // Для BuildContext
 import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
+import 'providers/settings_provider.dart';
 
 class Sudachi {
   static const _channel = MethodChannel('com.example.yomi_reader/sudachi');
@@ -31,14 +34,18 @@ class Sudachi {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> tokenize(String text) async {
+  static Future<List<Map<String, dynamic>>> tokenize(BuildContext context, String text) async {
     if (!_isInitialized) {
       _logger.warning('Sudachi не инициализирован, вызываем init...');
       await init();
     }
     try {
-      _logger.info('Токенизация текста: $text');
-      final result = await _channel.invokeMethod<List<dynamic>>('tokenize', {'text': text});
+      final settings = Provider.of<SettingsProvider>(context, listen: false);
+      _logger.info('Токенизация текста: $text, режим: ${settings.tokenizationMode}');
+      final result = await _channel.invokeMethod<List<dynamic>>('tokenize', {
+        'text': text,
+        'mode': settings.tokenizationMode,
+      });
       if (result == null) {
         _logger.warning('Токенизация вернула null');
         return [];

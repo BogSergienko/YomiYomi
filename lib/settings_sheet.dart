@@ -48,7 +48,7 @@ class SettingsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = Provider.of<SettingsProvider>(context);
-    debugPrint('SettingsSheet: uiLanguage=${settings.uiLanguage}');
+    debugPrint('SettingsSheet: uiLanguage=${settings.uiLanguage}, mode=${settings.tokenizationMode}');
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
       decoration: const BoxDecoration(
@@ -91,7 +91,18 @@ class SettingsSheet extends StatelessWidget {
           ),
           ListTile(
             title: Text(Translations.get('tokenization_mode', settings.uiLanguage)),
-            trailing: const Icon(Icons.lock),
+            trailing: DropdownButton<String>(
+              value: settings.tokenizationMode,
+              items: ['A', 'B', 'C'].map((mode) => DropdownMenuItem(
+                value: mode,
+                child: Text('Mode $mode'),
+              )).toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  settings.setTokenizationMode(value);
+                }
+              },
+            ),
           ),
           ListTile(
             title: Text(Translations.get('language', settings.uiLanguage)),
