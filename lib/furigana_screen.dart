@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'database.dart';
 import 'sudachi.dart';
+import 'settings_sheet.dart';
+import 'l10n/translations.dart';
+import 'providers/settings_provider.dart';
 
 class FuriganaScreen extends StatefulWidget {
   final String text;
@@ -91,7 +95,9 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
 
   void _showTranslationPopup(BuildContext context, Map<String, dynamic> translation, double wordBottom, double wordTop) {
     _overlayEntry?.remove();
-    String selectedLang = 'rus';
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
+    debugPrint('Popup: selectedLang=eng, Russian=${settings.showRussianTranslations}, Japanese=${settings.showJapaneseTranslations}');
+    String selectedLang = 'eng';
 
     final screenHeight = MediaQuery.of(context).size.height;
     final popupHeight = 200.0;
@@ -107,7 +113,7 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
     debugPrint('wordBottom: $wordBottom, wordTop: $wordTop, webViewTop: $webViewTop, topPosition: $topPosition, screenHeight: $screenHeight');
 
     _overlayEntry = OverlayEntry(
-      builder: (context) => GestureDetector(
+      builder: (overlayContext) => GestureDetector(
         onTap: () {
           _overlayEntry?.remove();
           _overlayEntry = null;
@@ -138,14 +144,6 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
                               Row(
                                 children: [
                                   TextButton(
-                                    onPressed: () => setState(() => selectedLang = 'rus'),
-                                    style: TextButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                                      minimumSize: const Size(40, 24),
-                                    ),
-                                    child: const Text('RU', style: TextStyle(fontSize: 12)),
-                                  ),
-                                  TextButton(
                                     onPressed: () => setState(() => selectedLang = 'eng'),
                                     style: TextButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -153,14 +151,24 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
                                     ),
                                     child: const Text('EN', style: TextStyle(fontSize: 12)),
                                   ),
-                                  TextButton(
-                                    onPressed: () => setState(() => selectedLang = 'ja'),
-                                    style: TextButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                                      minimumSize: const Size(40, 24),
+                                  if (settings.showRussianTranslations)
+                                    TextButton(
+                                      onPressed: () => setState(() => selectedLang = 'rus'),
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                                        minimumSize: const Size(40, 24),
+                                      ),
+                                      child: const Text('RU', style: TextStyle(fontSize: 12)),
                                     ),
-                                    child: const Text('JA', style: TextStyle(fontSize: 12)),
-                                  ),
+                                  if (settings.showJapaneseTranslations)
+                                    TextButton(
+                                      onPressed: () => setState(() => selectedLang = 'ja'),
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                                        minimumSize: const Size(40, 24),
+                                      ),
+                                      child: const Text('JA', style: TextStyle(fontSize: 12)),
+                                    ),
                                 ],
                               ),
                               IconButton(
@@ -210,6 +218,8 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = Provider.of<SettingsProvider>(context);
+    debugPrint('FuriganaScreen: uiLanguage=${settings.uiLanguage}');
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -271,7 +281,7 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
                   ),
                 ),
                 child: Text(
-                  _selectedJLPTLevel == 'all' ? 'JLPT' : _selectedJLPTLevel!,
+                  _selectedJLPTLevel == 'all' ? Translations.get('jlpt_label', settings.uiLanguage) : _selectedJLPTLevel!,
                   style: TextStyle(
                     fontSize: 12,
                     color: _selectedJLPTLevel == 'all' ? Colors.black : Colors.black87,
@@ -282,6 +292,15 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
           ],
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu, color: Colors.black),
+            onPressed: () {
+              debugPrint('Opening SettingsSheet from FuriganaScreen');
+              showSettingsSheet(context);
+            },
+          ),
+        ],
         bottom: _isJLPTMenuOpen
             ? PreferredSize(
           preferredSize: const Size.fromHeight(48.0),
@@ -292,9 +311,7 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
               children: ['N1', 'N2', 'N3', 'N4', 'N5'].map((level) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2.0),
                 child: TextButton(
-                  onPressed: () {
-                    _toggleJLPTLevel(level);
-                  },
+                  onPressed: () => _toggleJLPTLevel(level),
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     minimumSize: const Size(40, 36),
@@ -371,6 +388,7 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
                     if (results.isNotEmpty) {
                       String rus = 'Нет перевода';
                       String eng = 'No translation available';
+                      String ja = '大辞林: Coming soon';
                       for (var entry in results) {
                         if (entry['lang'] == 'rus' && entry['gloss'] != null) rus = entry['gloss'];
                         if (entry['lang'] == 'eng' && entry['gloss'] != null) eng = entry['gloss'];
@@ -379,7 +397,7 @@ class _FuriganaScreenState extends State<FuriganaScreen> {
                         'word': query,
                         'rus': rus,
                         'eng': eng,
-                        'ja': '大辞林: Coming soon',
+                        'ja': ja,
                       }, wordBottom, wordTop);
                     }
                     return results;
