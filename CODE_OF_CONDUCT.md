@@ -9,7 +9,7 @@ We pledge to make participation in our community a harassment-free experience fo
 - Provide constructive feedback.
 
 ## Enforcement
-Issues can be reported to [your-email@example.com]. Maintainers will review and address violations.
+Issues can be reported to [BogSergienko@gmail.com]. Maintainers will review and address violations.
 
 ## Attribution
 Adapted from the Contributor Covenant, version 2.1.

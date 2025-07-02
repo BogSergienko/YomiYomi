@@ -7,7 +7,7 @@
 | < 0.0.4 | ❌                 |
 
 ## Reporting a Vulnerability
-If you discover a security vulnerability, please report it to [your-email@example.com]. Include:
+If you discover a security vulnerability, please report it to [bogsergienko@gmail.comm]. Include:
 - A detailed description of the issue.
 - Steps to reproduce.
 - Potential impact.
