@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Пробный пример локализации японского ресторанного меню на русский: оригинальные названия, чтения, естественные описания и готовый формат для публикации.">
+  <title>Japanese → Russian Menu Localization | Portfolio Pilot</title>
+  <style>
+    :root { color-scheme: light; --ink:#17252e; --muted:#5e6b71; --line:#dce5e4; --accent:#005b52; --cream:#f4f8f5; }
+    *{box-sizing:border-box}
+    body{margin:0;background:#fff;color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+    .wrap{width:min(1050px,calc(100% - 36px));margin:auto}
+    header{border-bottom:1px solid var(--line);padding:13px 0}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    .logo{font-weight:800;letter-spacing:.02em;color:var(--accent)}
+    a{color:var(--accent)}
+    nav a{margin-left:18px;text-decoration:none;font-weight:600}
+    .hero{padding:70px 0 46px;background:linear-gradient(115deg,#f2f8f3,#fff)}
+    .eyebrow{font-weight:700;color:var(--accent);font-size:.86rem;letter-spacing:.12em;text-transform:uppercase}
+    h1{font-size:clamp(2.05rem,4vw,3.5rem);letter-spacing:-.045em;line-height:1.14;margin:16px 0}
+    h2{font-size:clamp(1.45rem,2.5vw,2.1rem);letter-spacing:-.02em;line-height:1.3}
+    .lead{font-size:1.15rem;max-width:690px;color:#374950}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+    .button{display:inline-block;border-radius:8px;padding:12px 19px;text-decoration:none;font-weight:750;border:1px solid var(--accent)}
+    .primary{background:var(--accent);color:white}
+    .secondary{background:white;color:var(--accent)}
+    section{padding:50px 0}
+    .sub{max-width:760px;color:var(--muted)}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+    .card{border:1px solid var(--line);border-radius:12px;padding:21px;background:#fff}
+    .card h3{margin:0 0 8px;font-size:1.13rem}
+    .card p{margin:0;color:var(--muted)}
+    .menu{margin-top:24px;border:1px solid var(--line);border-radius:13px;overflow:hidden}
+    .menu-item{display:grid;grid-template-columns:minmax(180px,1fr) minmax(220px,1.2fr);gap:18px;padding:18px 20px;border-bottom:1px solid var(--line)}
+    .menu-item:last-child{border:0}
+    .jp{font-weight:750;font-size:1.14rem}
+    ruby rt{font-size:.64em;font-weight:500;color:var(--muted)}
+    .ru{font-weight:700}
+    .detail,.note{font-size:.91rem;color:var(--muted)}
+    .detail{display:block;font-weight:400}
+    .cream{background:var(--cream)}
+    .price{font-size:2rem;line-height:1.1;font-weight:850;letter-spacing:-.025em;margin:5px 0 12px}
+    .steps{counter-reset:s;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:0;list-style:none}
+    .steps li{border-left:3px solid var(--accent);padding:8px 14px;background:var(--cream)}
+    .steps li:before{counter-increment:s;content:"0" counter(s);font-weight:800;display:block;color:var(--accent)}
+    footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.9rem}
+    :focus-visible{outline:3px solid #c18200;outline-offset:3px}
+    @media(max-width:700px){.cards,.steps{grid-template-columns:1fr}.menu-item{grid-template-columns:1fr;gap:5px}.hero{padding:42px 0}.top{align-items:start}nav a{margin-left:0;margin-right:12px}}
+  </style>
+</head>
+<body>
+<header><div class="wrap top"><div class="logo">MENU / ЯПОНИЯ → РУССКИЙ</div><nav aria-label="Разделы"><a href="#example">Пример</a><a href="#offer">Условия</a><a href="#contact">Запрос</a></nav></div></header>
+<main>
+  <div class="hero"><div class="wrap">
+    <div class="eyebrow">Небольшой пилот • Японский → Русский</div>
+    <h1>Меню, которое гости<br>понимают с первого взгляда.</h1>
+    <p class="lead">Помогаем превращать названия японских блюд в понятные русскоязычные описания — с сохранением смысла, технологии приготовления и культурного контекста.</p>
+    <div class="actions"><a class="button primary" href="#example">Посмотреть 8 примеров</a><a class="button secondary" href="#contact">Обсудить меню</a></div>
+  </div></div>
+
+  <section><div class="wrap">
+    <h2>Что входит в локализацию</h2>
+    <div class="cards">
+      <article class="card"><h3>Точное название</h3><p>Не механическая транслитерация, а понятное русское название блюда.</p></article>
+      <article class="card"><h3>Короткое пояснение</h3><p>Состав и способ приготовления — там, где это нужно гостю для выбора.</p></article>
+      <article class="card"><h3>Удобный результат</h3><p>Двуязычная таблица, которую удобно перенести в меню, сайт или систему заказа.</p></article>
+    </div>
+  </div></section>
+
+  <section id="example" class="cream"><div class="wrap">
+    <div class="eyebrow">Авторский демонстрационный пример</div>
+    <h2>8 позиций: оригинал → локализация</h2>
+    <p class="sub">Все названия и переводы ниже — учебный пример. Это не меню конкретного ресторана; рецептура, порции, ингредиенты и цены не подтверждены.</p>
+    <div class="menu" role="list">
+      <div class="menu-item" role="listitem"><div class="jp"><ruby>鶏<rt>とり</rt></ruby>の<ruby>唐揚<rt>からあ</rt></ruby>げ</div><div class="ru">Курица караагэ<span class="detail">Кусочки курицы, обжаренные до хрустящей корочки.</span></div></div>
+      <div class="menu-item" role="listitem"><div class="jp"><ruby>味噌汁<rt>みそしる</rt></ruby></div><div class="ru">Мисо-суп<span class="detail">Традиционный японский суп на основе пасты мисо.</span></div></div>
+      <div class="menu-item" role="listitem"><div class="jp"><ruby>焼<rt>や</rt></ruby>き<ruby>鮭<rt>ざけ</rt></ruby></div><div class="ru">Жареный лосось<span class="detail">Лосось, приготовленный на гриле или сковороде; метод уточняется для конкретного блюда.</span></div></div>
+      <div class="menu-item" role="listitem"><div class="jp"><ruby>親子丼<rt>おやこどん</rt></ruby></div><div class="ru">Оякодон — рис с курицей и яйцом<span class="detail">Японское горячее блюдо из риса, курицы и яйца.</span></div></div>
+      <div class="menu-item" role="listitem"><div class="jp"><ruby>野菜天<rt>やさいてん</rt></ruby>ぷら</div><div class="ru">Овощи темпура<span class="detail">Овощи в лёгком кляре, обжаренные во фритюре.</span></div></div>
+      <div class="menu-item" role="listitem"><div class="jp">きつねうどん</div><div class="ru">Удон с жареным тофу<span class="detail">Пшеничная лапша в бульоне с кусочками сладковатого жареного тофу.</span></div></div>
+      <div class="menu-item" role="listitem"><div class="jp"><ruby>茶碗蒸<rt>ちゃわんむ</rt></ruby>し</div><div class="ru">Тяванмуси — японский яичный крем<span class="detail">Несладкое блюдо из яичной смеси, приготовленной на пару.</span></div></div>
+      <div class="menu-item" role="listitem"><div class="jp"><ruby>抹茶<rt>まっちゃ</rt></ruby>アイス</div><div class="ru">Мороженое с матча<span class="detail">Мороженое со вкусом японского зелёного чая.</span></div></div>
+    </div>
+    <p class="note">Важно: сведения об аллергенах, сырой рыбе, алкоголе, веганском статусе и пищевой безопасности нельзя определять по одному названию. Для публикации их необходимо сверять с рецептурой и подтверждать у владельца меню.</p>
+  </div></section>
+
+  <section id="offer"><div class="wrap">
+    <h2>Простая услуга без большого проекта</h2>
+    <div class="cards">
+      <article class="card"><h3>Пробный пакет</h3><div class="price">¥8 000</div><p>Ориентир для проверки спроса: до 8 блюд, японский → русский, один раунд текстовых правок. Не подтверждённая рынком цена и не автоматическая оферта.</p></article>
+      <article class="card"><h3>От вас</h3><p>Публичное или предоставленное с разрешением меню, названия и описания, уточнения по рецептуре. Не размещайте закрытые данные в открытом GitHub.</p></article>
+      <article class="card"><h3>Вы получите</h3><p>Проверенную человеком двуязычную таблицу для согласования; цену и сроки согласуем до любой оплачиваемой работы.</p></article>
+    </div>
+  </div></section>
+
+  <section id="contact" class="cream"><div class="wrap">
+    <h2>Обсудим 3–8 позиций?</h2>
+    <p class="sub">Это демонстрационный пилот, а не активный сервис приёма заказов. Для первичного запроса можно создать открытое GitHub-обращение без личных данных. Частный канал общения и возможность принять оплачиваемую работу должны быть отдельно согласованы.</p>
+    <div class="actions"><a class="button primary" href="https://github.com/BogSergienko/YomiYomi/issues/new?template=menu-localization-enquiry.md">Отправить запрос через GitHub</a><a class="button secondary" href="https://github.com/BogSergienko/YomiYomi">Посмотреть проект YomiYomi</a></div>
+    <p class="note">Нужен аккаунт GitHub. Не прикладывайте персональные данные, закрытые рецепты, договоры и неопубликованные меню.</p>
+  </div></section>
+  <section><div class="wrap">
+    <h2>Как проходит небольшой заказ</h2>
+    <ol class="steps"><li>Короткий открытый запрос без конфиденциальных данных.</li><li>Уточнение объёма, законности оплаты, цены и срока.</li><li>Работа только после отдельного согласования; итог — двуязычная таблица.</li></ol>
+  </div></section>
+</main>
+<footer><div class="wrap">Независимый эксперимент с локализацией меню; не функция приложения YomiYomi. Изображения и примеры ресторанов не использованы. © 2026 Portfolio pilot.</div></footer>
+</body>
+</html>
